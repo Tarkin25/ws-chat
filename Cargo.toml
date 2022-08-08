@@ -1,7 +1,4 @@
 [workspace]
 members = [
     "backend",
-    "learntower",
-    "learnhyper",
-    "learnaxum"
 ]
