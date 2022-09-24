@@ -40,6 +40,7 @@ pub async fn handle_connection(mut websocket: WebSocket, users: Arc<Users>) -> a
                 } 
             }
             Message::Close(_) => {
+                tracing::info!("user \"{}\" left", &user);
                 users.leave(user.clone()).await.context("Unable to leave")?;
             }
             _ => {}
