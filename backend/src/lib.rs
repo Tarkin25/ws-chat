@@ -3,12 +3,10 @@ use std::sync::Arc;
 use anyhow::Context;
 use axum::extract::ws::{WebSocket, Message};
 use futures::StreamExt;
-use message::ClientMessage;
 use users::Users;
+use shared::{self, ClientMessage};
 
-pub mod error;
 pub mod users;
-pub mod message;
 
 #[tracing::instrument(skip(websocket))]
 pub async fn handle_connection(mut websocket: WebSocket, users: Arc<Users>) -> anyhow::Result<()> {
@@ -17,9 +15,9 @@ pub async fn handle_connection(mut websocket: WebSocket, users: Arc<Users>) -> a
         if let Some(Ok(message)) = websocket.recv().await {
             match message {
                 Message::Text(message) => {
-                    let message: ClientMessage = serde_json::from_str(&message).context("Unable to deserialize message")?;
+                    let message: shared::ClientMessage = serde_json::from_str(&message).context("Unable to deserialize message")?;
 
-                    if let ClientMessage::Join(user) = message {
+                    if let shared::ClientMessage::Join(user) = message {
                         break user;
                     }
                 },

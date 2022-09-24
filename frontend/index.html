@@ -5,22 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WS Chat</title>
+
+    <link data-trunk rel="css" href="styles/output.css" />
 </head>
 <body>
-    <script>
-        const ws = new WebSocket("ws://localhost:8080/websocket");
-        ws.onmessage = e => {
-            const message = JSON.parse(e.data);
-            console.log("Received", message);
-        }
-
-        window.join = (username) => {
-            ws.send(JSON.stringify({Join: username}));
-        }
-
-        window.send = (message) => {
-            ws.send(JSON.stringify({SendMessage: message}));
-        }
-    </script>
+    
 </body>
 </html>

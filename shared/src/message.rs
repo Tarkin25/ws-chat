@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-use crate::error::Error;
+use crate::Error;
 
 #[derive(Debug, Serialize, Clone)]
 pub enum ServerMessage {

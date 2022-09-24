@@ -5,7 +5,7 @@ use axum::extract::ws::{Message, WebSocket};
 use dashmap::DashMap;
 use futures::{stream::SplitSink, SinkExt};
 
-use crate::{error::Error, message::ServerMessage};
+use shared::{ServerMessage, Error};
 
 #[derive(Debug, Default)]
 pub struct Users(DashMap<String, ServerSender>);
