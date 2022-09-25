@@ -21,6 +21,10 @@ pub async fn handle_connection(mut websocket: WebSocket, users: Arc<Users>) -> a
                         break user;
                     }
                 },
+                Message::Close(_) => {
+                    tracing::debug!("connection closed");
+                    return Ok(());
+                }
                 _ => continue
             }
         }
