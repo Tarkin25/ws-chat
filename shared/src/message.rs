@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::Error;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum ServerMessage {
     Joined(String),
     Left(String),

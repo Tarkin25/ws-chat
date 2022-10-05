@@ -10,7 +10,7 @@ use yew_router::prelude::*;
 mod components;
 mod agents;
 
-use components::AppBar;
+use components::{AppBar, Chat};
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());
@@ -54,10 +54,14 @@ fn app() -> Html {
     html! {
         <ContextProvider<AppContext> context={(*context).clone()}>
             <BrowserRouter>
-                <AppBar>
-                    {"WS Chat"}
-                </AppBar>
-                <Switch<Route> render={Switch::render(switch)} />
+                <div class="p-4 h-screen flex justify-center bg-gray-700">
+                    <div class="flex flex-col grow container border rounded border-slate-800">
+                        <AppBar>
+                            {"WS Chat"}
+                        </AppBar>
+                        <Switch<Route> render={Switch::render(switch)} />
+                    </div>
+                </div>
             </BrowserRouter>
         </ContextProvider<AppContext>>
      }
@@ -94,45 +98,5 @@ fn join() -> Html {
                 <button {onclick} disabled={username.len()<1} >{"Join"}</button>
             </Link<Route>>
         </form>
-    }
-}
-
-#[function_component(Chat)]
-fn chat() -> Html {
-    let websocket = use_bridge::<WebSocketAgent, _>(|message| {
-        log::info!("{:#?}", message);
-    });
-
-    let context = use_context::<AppContext>().expect("Expected AppContext to be available");
-    let history = use_history().expect("Expected history to be available");
-    use_effect_with_deps(|(context, history)| {
-        if context.user.borrow().is_none() {
-            history.push(Route::Join);
-        }
-
-        || {}
-    }, (context, history));
-
-    let input_ref = use_node_ref();
-
-    let onsubmit = {
-        let input_ref = input_ref.clone();
-        let websocket = websocket.clone();
-        
-        Callback::from(move |e: FocusEvent| {
-            e.prevent_default();
-            let input = input_ref.cast::<HtmlInputElement>().unwrap();
-            websocket.send(Command::SendMessage(ClientMessage::SendMessage(input.value())));
-            input.set_value("");
-        })
-    };
-    
-    html! {
-        <div>
-            <form {onsubmit}>
-                <input ref={input_ref} placeholder="Type a message..." />
-                <button type="submit">{"Send"}</button>
-            </form>
-        </div>
     }
 }

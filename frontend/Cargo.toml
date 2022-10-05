@@ -5,6 +5,7 @@ edition = "2021"
 
 [package.metadata.scripts]
 tailwind = "npx tailwindcss -i styles/input.css -o styles/output.css --watch"
+serve = "trunk serve --port 3000"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
