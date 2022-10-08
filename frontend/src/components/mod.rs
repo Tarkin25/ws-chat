@@ -1,7 +1,7 @@
-mod app_bar;
 mod chat;
 mod message;
+mod join;
 
-pub use app_bar::*;
 pub use chat::*;
 pub use message::*;
+pub use join::*;

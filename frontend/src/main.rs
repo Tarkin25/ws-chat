@@ -1,7 +1,5 @@
 use std::{rc::Rc, cell::RefCell};
 
-use shared::ClientMessage;
-use web_sys::HtmlInputElement;
 use agents::websocket::{WebSocketAgent, Command};
 use yew::prelude::*;
 use yew_agent::use_bridge;
@@ -10,7 +8,7 @@ use yew_router::prelude::*;
 mod components;
 mod agents;
 
-use components::{AppBar, Chat};
+use components::{Chat, Join};
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());
@@ -26,7 +24,7 @@ fn switch(route: &Route) -> Html {
 }
 
 #[derive(Clone, Routable, PartialEq)]
-enum Route {
+pub enum Route {
     #[at("/")]
     Join,
     #[at("/chat")]
@@ -54,49 +52,15 @@ fn app() -> Html {
     html! {
         <ContextProvider<AppContext> context={(*context).clone()}>
             <BrowserRouter>
-                <div class="p-4 h-screen flex justify-center bg-gray-700">
-                    <div class="flex flex-col grow container border rounded border-slate-800">
-                        <AppBar>
-                            {"WS Chat"}
-                        </AppBar>
+                <div class="p-4 h-screen flex justify-center bg-slate-900 text-gray-300">
+                    <div class="grow flex flex-col container rounded-lg shadow-lg bg-slate-800">
+                        <header class="flex p-4 bg-indigo-800 rounded-tl-lg rounded-tr-lg">
+                            <h1 class="text-2xl">{"WS Chat"}</h1>
+                        </header>
                         <Switch<Route> render={Switch::render(switch)} />
                     </div>
                 </div>
             </BrowserRouter>
         </ContextProvider<AppContext>>
      }
-}
-
-#[function_component(Join)]
-fn join() -> Html {
-    let username = use_state(|| String::new());
-    let context = use_context::<AppContext>().expect("No context found");
-    let websocket = use_bridge::<WebSocketAgent, _>(|_| {});
-
-    let oninput = {
-        let username = username.clone();
-
-        Callback::from(move |e: InputEvent| {
-            let input: HtmlInputElement = e.target_unchecked_into();
-            username.set(input.value());
-        })
-    };
-
-    let onclick = {
-        let username = username.clone();
-        let user = Rc::clone(&context.user);
-        Callback::from(move |_| {
-            *user.borrow_mut() = Some((*username).clone());
-            websocket.send(Command::SendMessage(ClientMessage::Join((*username).clone())));
-        })
-    };
-    
-    html! {
-        <form>
-            <input {oninput} placeholder="Username" />
-            <Link<Route> to={Route::Chat}>
-                <button {onclick} disabled={username.len()<1} >{"Join"}</button>
-            </Link<Route>>
-        </form>
-    }
 }
